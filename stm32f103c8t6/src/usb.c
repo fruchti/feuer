@@ -6,7 +6,6 @@ uint8_t USB_DeviceStatus[2] = {0x00, 0x01};
 volatile unsigned int USB_ResetCount = 0;
 volatile unsigned int USB_Address = 0;
 
-__attribute__((used))
 static inline void USB_SetEPR(volatile uint16_t *EPR, uint16_t status)
 {
     // Caution: This function does a read-modify-write and is prone to
@@ -35,7 +34,6 @@ static inline void USB_SetEPTXStatus(volatile uint16_t *EPR, uint16_t status)
     *EPR = v;
 }
 
-__attribute__((used))
 static inline void USB_SetEPType(volatile uint16_t *EPR, uint16_t type)
 {
     uint16_t v = *EPR;
@@ -44,7 +42,6 @@ static inline void USB_SetEPType(volatile uint16_t *EPR, uint16_t type)
     *EPR = v;
 }
 
-__attribute__((used))
 static inline void USB_SetEPAddress(volatile uint16_t *EPR, uint16_t address)
 {
     uint16_t v = *EPR;
@@ -53,7 +50,6 @@ static inline void USB_SetEPAddress(volatile uint16_t *EPR, uint16_t address)
     *EPR = v;
 }
 
-__attribute__((used))
 static inline void USB_SetEPKind(volatile uint16_t *EPR)
 {
     uint16_t v = *EPR;
@@ -62,7 +58,6 @@ static inline void USB_SetEPKind(volatile uint16_t *EPR)
     *EPR = v;
 }
 
-__attribute__((used))
 static inline void USB_ClearEPKind(volatile uint16_t *EPR)
 {
     uint16_t v = *EPR;
@@ -70,7 +65,6 @@ static inline void USB_ClearEPKind(volatile uint16_t *EPR)
     *EPR = v;
 }
 
-__attribute__((used))
 static inline void USB_ClearEPCTRX(volatile uint16_t *EPR)
 {
     uint16_t v = *EPR;
@@ -78,7 +72,6 @@ static inline void USB_ClearEPCTRX(volatile uint16_t *EPR)
     *EPR = v;
 }
 
-__attribute__((used))
 static inline void USB_ClearEPCTTX(volatile uint16_t *EPR)
 {
     uint16_t v = *EPR;

@@ -19,7 +19,7 @@ DEBUG_FLAGS = -DDEBUG -g3
 endif
 
 CFLAGS = -mcpu=cortex-m3 -mthumb \
-		 -Os -fno-common \
+		 -Os -fno-common -Werror \
 		 -Wall -Xlinker --gc-sections -I$(CUBE_DIR)/Drivers/CMSIS/Include \
 		 -I$(CUBE_DIR)/Drivers/CMSIS/Device/ST/$(CUBE_DEVICE)/Include \
 		 -D$(H_DEVICE) -D_DEFAULT_SOURCE -T$(LD_SCRIPT) \
