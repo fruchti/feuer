@@ -7,6 +7,7 @@
 #include "buildid.h"
 #include "debug.h"
 #include "usb.h"
+#include "ws2812b_timer.h"
 
 int main(void);
 

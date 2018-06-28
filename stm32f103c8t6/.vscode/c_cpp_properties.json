@@ -3,11 +3,9 @@
         {
             "name": "STM32F030x6",
             "includePath": [
-                "/usr/lib/gcc/arm-none-eabi/7.3.0/include",
-
+                "/usr/lib/gcc/arm-none-eabi/8.1.0/include",
                 "/opt/stm32cube/STM32Cube_FW_F1_V1.6.0/Drivers/CMSIS/Include",
                 "/opt/stm32cube/STM32Cube_FW_F1_V1.6.0/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
-
                 "${workspaceRoot}"
             ],
             "defines": [
@@ -17,11 +15,9 @@
             "intelliSenseMode": "clang-x64",
             "browse": {
                 "path": [
-                    "/usr/lib/gcc/arm-none-eabi/7.3.0/include",
-    
+                    "/usr/lib/gcc/arm-none-eabi/8.1.0/include",
                     "/opt/stm32cube/STM32Cube_FW_F1_V1.6.0/Drivers/CMSIS/Include",
                     "/opt/stm32cube/STM32Cube_FW_F1_V1.6.0/Drivers/CMSIS/Device/ST/STM32F1xx/Include",
-                    
                     "${workspaceRoot}"
                 ],
                 "limitSymbolsToIncludedHeaders": true,
@@ -29,5 +25,5 @@
             }
         }
     ],
-    "version": 3
+    "version": 4
 }
