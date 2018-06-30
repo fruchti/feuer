@@ -93,8 +93,11 @@ typedef enum
     USB_ENDPOINT_DESCRIPTOR
 } __attribute__((packed)) USB_DescriptorType_t;
 
-#define USB_STRING_DESCRIPTOR_LENGTH(...)       (sizeof((uint16_t[]){__VA_ARGS__}) + 2)
-#define USB_BUILD_STRING_DESCRIPTOR(...)        {USB_STRING_DESCRIPTOR_LENGTH(__VA_ARGS__) | (USB_STRING_DESCRIPTOR << 8), __VA_ARGS__}
+#define USB_STRING_DESCRIPTOR_LENGTH(...)       \
+    (sizeof((uint16_t[]){__VA_ARGS__}) + 2)
+#define USB_BUILD_STRING_DESCRIPTOR(...)        \
+    {USB_STRING_DESCRIPTOR_LENGTH(__VA_ARGS__) \
+    | (USB_STRING_DESCRIPTOR << 8), __VA_ARGS__}
 
 extern const uint16_t USB_StringDescriptor_LangID[];
 extern const uint16_t USB_StringDescriptor_Vendor[];

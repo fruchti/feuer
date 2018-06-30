@@ -138,15 +138,5 @@ void DMA1_Channel3_IRQHandler(void)
     {
         WS2812B_UpdateBuffer();
     }
-
-    // if(DMA1->ISR & DMA_ISR_HTIF3)
-    // {
-    //     // Half transfer interrupt
-    // }
-    // else
-    // {
-    //     // Transfer complete
-    // }
-    // Clear all interrupt flags
     DMA1->IFCR = DMA_IFCR_CGIF3;
 }

@@ -37,32 +37,46 @@
 #define USB_REQUEST_RECIPIENT_ENDPOINT          2
 #define USB_REQUEST_RECIPIENT_OTHER             3
 
-#define USB_REQUEST_CLEAR_FEATURE               1   // wValue = <feature>, wIndex = 0|<interface>|<endpoint>, wLength = 0
-#define USB_REQUEST_GET_CONFIGURATION           8   // wValue = 0, wIndex = 0, wLength = 1
-#define USB_REQUEST_GET_DESCRIPTOR              6   // wValue = <descriptor type>:<descriptor index>, wIndex = 0|<language>, wLength = <descriptor length>
-#define USB_REQUEST_GET_INTERFACE               10  // wValue = 0, wIndex = <interface>, wLength = 1
-#define USB_REQUEST_GET_STATUS                  0   // wValue = 0, wIndex = 0|<interface>|<endpoint>, wLength = 2
-#define USB_REQUEST_SET_ADDRESS                 5   // wValue = <address>, wIndex = 0, wLength = 0
-#define USB_REQUEST_SET_CONFIGURATION           9   // wValue = <configuration value>, wIndex = 0, wLength = 0
-#define USB_REQUEST_SET_DESCRIPTOR              7   // wValue = <descriptor type>:<descriptor index>, wIndex = 0|<language>, wLength = <descriptor length>
-#define USB_REQUEST_SET_FEATURE                 3   // wValue = <feature selector>, wIndex = 0|<interface>|<endpoint>, wLength = 0
-#define USB_REQUEST_SET_INTERFACE               11  // wValue = <alternate setting>, wIndex = <interface>, wLength = 0
-#define USB_REQUEST_SYNCH_FRAME                 12  // wValue = 0, wIndex = <endpoint>, wLength = 2
+#define USB_REQUEST_CLEAR_FEATURE               1
+    // wValue = <feature>, wIndex = 0|<interface>|<endpoint>, wLength = 0
+#define USB_REQUEST_GET_CONFIGURATION           8
+    // wValue = 0, wIndex = 0, wLength = 1
+#define USB_REQUEST_GET_DESCRIPTOR              6
+    // wValue = <descriptor type>:<descriptor index>, wIndex = 0|<language>, wLength = <descriptor length>
+#define USB_REQUEST_GET_INTERFACE               10
+    // wValue = 0, wIndex = <interface>, wLength = 1
+#define USB_REQUEST_GET_STATUS                  0
+    // wValue = 0, wIndex = 0|<interface>|<endpoint>, wLength = 2
+#define USB_REQUEST_SET_ADDRESS                 5
+    // wValue = <address>, wIndex = 0, wLength = 0
+#define USB_REQUEST_SET_CONFIGURATION           9
+    // wValue = <configuration value>, wIndex = 0, wLength = 0
+#define USB_REQUEST_SET_DESCRIPTOR              7
+    // wValue = <descriptor type>:<descriptor index>, wIndex = 0|<language>, wLength = <descriptor length>
+#define USB_REQUEST_SET_FEATURE                 3
+    // wValue = <feature selector>, wIndex = 0|<interface>|<endpoint>, wLength = 0
+#define USB_REQUEST_SET_INTERFACE               11
+    // wValue = <alternate setting>, wIndex = <interface>, wLength = 0
+#define USB_REQUEST_SYNCH_FRAME                 12
+    // wValue = 0, wIndex = <endpoint>, wLength = 2
 
 #define USB_EPR_STAT_TX_DISABLED                0x00
 #define USB_EPR_STAT_TX_STALL                   USB_EP0R_STAT_TX_0
 #define USB_EPR_STAT_TX_NAK                     USB_EP0R_STAT_TX_1
-#define USB_EPR_STAT_TX_VALID                   (USB_EP0R_STAT_TX_0 | USB_EP0R_STAT_TX_1)
+#define USB_EPR_STAT_TX_VALID                   (USB_EP0R_STAT_TX_0 \
+    | USB_EP0R_STAT_TX_1)
 
 #define USB_EPR_STAT_RX_DISABLED                0x00
 #define USB_EPR_STAT_RX_STALL                   USB_EP0R_STAT_RX_0
 #define USB_EPR_STAT_RX_NAK                     USB_EP0R_STAT_RX_1
-#define USB_EPR_STAT_RX_VALID                   (USB_EP0R_STAT_RX_0 | USB_EP0R_STAT_RX_1)
+#define USB_EPR_STAT_RX_VALID                   (USB_EP0R_STAT_RX_0 \
+    | USB_EP0R_STAT_RX_1)
 
 #define USB_EPR_EP_TYPE_BULK                    0x00
 #define USB_EPR_EP_TYPE_CONTROL                 USB_EP0R_EP_TYPE_0
 #define USB_EPR_EP_TYPE_ISO                     USB_EP0R_EP_TYPE_1
-#define USB_EPR_EP_TYPE_INTERRUPT               (USB_EP0R_EP_TYPE_0 | USB_EP0R_EP_TYPE_1)
+#define USB_EPR_EP_TYPE_INTERRUPT               (USB_EP0R_EP_TYPE_0 \
+    | USB_EP0R_EP_TYPE_1)
 
 #define USB_PMA_ADDR                            0x40006000UL
 #define USB_BTABLE_OFFSET                       0x00
@@ -109,7 +123,8 @@ typedef struct
     uint16_t wLength;
 } __attribute__((packed, aligned(2))) USB_SetupPacket_t;
 
-#define USB_BTABLE_ENTRIES                      ((USB_BufferTableEntry_t*)(USB_PMA_ADDR + USB_BTABLE_OFFSET))
+#define USB_BTABLE_ENTRIES                      \
+    ((USB_BufferTableEntry_t*)(USB_PMA_ADDR + USB_BTABLE_OFFSET))
 
 void USB_Init(void);
 

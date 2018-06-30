@@ -55,11 +55,18 @@ const USB_WholeDescriptor_t USB_ConfigurationInterfaceDescriptor =
 };
 
 #define USB_STRING_LANGID                       0x0409
-#define USB_STRING_VENDOR                       'F', 'r', 'u', 'c', 'h', 't','i', '\'', 's', 0
-#define USB_STRING_PRODUCT                      'F', 'e', 'u', 'e', 'r', 0
-#define USB_STRING_SERIAL                       'v', '0', '.', '1', '1', 0
+#define USB_STRING_VENDOR                       \
+    'F', 'r', 'u', 'c', 'h', 't','i', '\'', 's', 0
+#define USB_STRING_PRODUCT                      \
+    'F', 'e', 'u', 'e', 'r', 0
+#define USB_STRING_SERIAL                       \
+    'v', '0', '.', '1', '1', 0
 
-const uint16_t USB_StringDescriptor_LangID[] = USB_BUILD_STRING_DESCRIPTOR(USB_STRING_LANGID);
-const uint16_t USB_StringDescriptor_Vendor[] = USB_BUILD_STRING_DESCRIPTOR(USB_STRING_VENDOR);
-const uint16_t USB_StringDescriptor_Product[] = USB_BUILD_STRING_DESCRIPTOR(USB_STRING_PRODUCT);
-const uint16_t USB_StringDescriptor_Serial[] = USB_BUILD_STRING_DESCRIPTOR(USB_STRING_SERIAL);
+const uint16_t USB_StringDescriptor_LangID[] =
+    USB_BUILD_STRING_DESCRIPTOR(USB_STRING_LANGID);
+const uint16_t USB_StringDescriptor_Vendor[] =
+    USB_BUILD_STRING_DESCRIPTOR(USB_STRING_VENDOR);
+const uint16_t USB_StringDescriptor_Product[] =
+    USB_BUILD_STRING_DESCRIPTOR(USB_STRING_PRODUCT);
+const uint16_t USB_StringDescriptor_Serial[] =
+    USB_BUILD_STRING_DESCRIPTOR(USB_STRING_SERIAL);

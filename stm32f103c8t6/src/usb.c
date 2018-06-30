@@ -10,8 +10,8 @@ static inline void USB_SetEPR(volatile uint16_t *EPR, uint16_t status)
 {
     // Caution: This function does a read-modify-write and is prone to
     // unexpected behaviour when there are transactions going one, because the
-    // register contents might change during the funciton's execution. Thus, only
-    // use this function in initialisation code!
+    // register contents might change during the funciton's execution. Thus,
+    // only use this function in initialisation code!
     volatile uint16_t v = *EPR;
     status ^= v & (USB_EP0R_DTOG_RX | USB_EP0R_STAT_RX |\
         USB_EP0R_DTOG_TX | USB_EP0R_STAT_TX);
@@ -22,7 +22,8 @@ static inline void USB_SetEPRXStatus(volatile uint16_t *EPR, uint16_t status)
 {
     uint16_t v = *EPR;
     v ^= status & USB_EP0R_STAT_RX;
-    v &= USB_EP0R_CTR_RX | USB_EP0R_EP_TYPE | USB_EP0R_EP_KIND | USB_EP0R_CTR_TX | USB_EP0R_EA | USB_EP0R_STAT_RX;
+    v &= USB_EP0R_CTR_RX | USB_EP0R_EP_TYPE | USB_EP0R_EP_KIND | USB_EP0R_CTR_TX
+        | USB_EP0R_EA | USB_EP0R_STAT_RX;
     *EPR = v;
 }
 
@@ -30,7 +31,8 @@ static inline void USB_SetEPTXStatus(volatile uint16_t *EPR, uint16_t status)
 {
     uint16_t v = *EPR;
     v ^= status & USB_EP0R_STAT_TX;
-    v &= USB_EP0R_CTR_RX | USB_EP0R_EP_TYPE | USB_EP0R_EP_KIND | USB_EP0R_CTR_TX | USB_EP0R_EA | USB_EP0R_STAT_TX;
+    v &= USB_EP0R_CTR_RX | USB_EP0R_EP_TYPE | USB_EP0R_EP_KIND | USB_EP0R_CTR_TX
+        | USB_EP0R_EA | USB_EP0R_STAT_TX;
     *EPR = v;
 }
 
@@ -45,7 +47,8 @@ static inline void USB_SetEPType(volatile uint16_t *EPR, uint16_t type)
 static inline void USB_SetEPAddress(volatile uint16_t *EPR, uint16_t address)
 {
     uint16_t v = *EPR;
-    v &= USB_EP0R_CTR_RX | USB_EP0R_EP_TYPE | USB_EP0R_EP_KIND | USB_EP0R_CTR_TX;
+    v &= USB_EP0R_CTR_RX | USB_EP0R_EP_TYPE | USB_EP0R_EP_KIND
+        | USB_EP0R_CTR_TX;
     v |= USB_EP0R_EA & address;
     *EPR = v;
 }
@@ -172,7 +175,8 @@ static inline void USB_PMAToMemory(uint8_t *mem, uint16_t offset, size_t length)
     }
 }
 
-static inline void USB_MemoryToPMA(uint16_t offset, const uint8_t *mem, size_t length)
+static inline void USB_MemoryToPMA(uint16_t offset, const uint8_t *mem,
+    size_t length)
 {
     uint16_t *pma = (uint16_t*)(USB_PMA_ADDR + 2 * offset);
     for(unsigned int i = 0; i < length / 2; i++)
@@ -202,8 +206,8 @@ static inline void USB_HandleOut(void)
 static inline void USB_HandleSetup(void)
 {
     USB_SetupPacket_t sp;
-    //memcpy(&sp, (const void*)(USB_PMA_ADDR + USB_BTABLE_ENTRIES[0].ADDR_RX), sizeof(USB_SetupPacket_t));
-    USB_PMAToMemory((uint8_t*)&sp, USB_BTABLE_ENTRIES[0].ADDR_RX, sizeof(USB_SetupPacket_t));
+    USB_PMAToMemory((uint8_t*)&sp, USB_BTABLE_ENTRIES[0].ADDR_RX,
+        sizeof(USB_SetupPacket_t));
 
     const uint8_t *reply_data = NULL;
     int reply_length = 0;
@@ -234,13 +238,16 @@ static inline void USB_HandleSetup(void)
 
                     case USB_CONFIGURATION_DESCRIPTOR:;
                         reply_data = USB_ConfigurationInterfaceDescriptor.raw;
-                        if(sp.wLength < USB_ConfigurationInterfaceDescriptor.configuration.wTotalLength)
+                        if(sp.wLength < USB_ConfigurationInterfaceDescriptor
+                            .configuration.wTotalLength)
                         {   
-                            reply_length = USB_ConfigurationInterfaceDescriptor.configuration.bLength;
+                            reply_length = USB_ConfigurationInterfaceDescriptor
+                                .configuration.bLength;
                         }
                         else
                         {
-                            reply_length = USB_ConfigurationInterfaceDescriptor.configuration.wTotalLength;
+                            reply_length = USB_ConfigurationInterfaceDescriptor
+                                .configuration.wTotalLength;
                         }
                         break;
 
@@ -248,20 +255,28 @@ static inline void USB_HandleSetup(void)
                         switch(descriptor_index)
                         {
                             case 0:;
-                                reply_data = (uint8_t*)USB_StringDescriptor_LangID;
-                                reply_length = (uint8_t)*USB_StringDescriptor_LangID;
+                                reply_data =
+                                    (uint8_t*)USB_StringDescriptor_LangID;
+                                reply_length =
+                                    (uint8_t)*USB_StringDescriptor_LangID;
                                 break;
                             case 1:;
-                                reply_data = (uint8_t*)USB_StringDescriptor_Vendor;
-                                reply_length = (uint8_t)*USB_StringDescriptor_Vendor;
+                                reply_data =
+                                    (uint8_t*)USB_StringDescriptor_Vendor;
+                                reply_length =
+                                    (uint8_t)*USB_StringDescriptor_Vendor;
                                 break;
                             case 2:;
-                                reply_data = (uint8_t*)USB_StringDescriptor_Product;
-                                reply_length = (uint8_t)*USB_StringDescriptor_Product;
+                                reply_data =
+                                    (uint8_t*)USB_StringDescriptor_Product;
+                                reply_length =
+                                    (uint8_t)*USB_StringDescriptor_Product;
                                 break;
                             case 3:;
-                                reply_data = (uint8_t*)USB_StringDescriptor_Serial;
-                                reply_length = (uint8_t)*USB_StringDescriptor_Serial;
+                                reply_data =
+                                    (uint8_t*)USB_StringDescriptor_Serial;
+                                reply_length =
+                                    (uint8_t)*USB_StringDescriptor_Serial;
                                 break;
                             default:;
                                 __asm__ volatile("bkpt");
@@ -269,8 +284,10 @@ static inline void USB_HandleSetup(void)
                         break;
 
                     case USB_INTERFACE_DESCRIPTOR:;
-                        reply_data = USB_ConfigurationInterfaceDescriptor.interface0.raw;
-                        reply_length = USB_ConfigurationInterfaceDescriptor.interface0.bLength;
+                        reply_data =USB_ConfigurationInterfaceDescriptor
+                            .interface0.raw;
+                        reply_length = USB_ConfigurationInterfaceDescriptor
+                            .interface0.bLength;
                         break;
 
                     case USB_ENDPOINT_DESCRIPTOR:;
@@ -302,8 +319,8 @@ static inline void USB_HandleSetup(void)
     if(reply_data)
     {
         // Reply with data
-        //memcpy((void*)(USB_PMA_ADDR + USB_BTABLE_ENTRIES[0].ADDR_TX), reply_data, reply_length);
-        USB_MemoryToPMA(USB_BTABLE_ENTRIES[0].ADDR_TX, reply_data, reply_length);
+        USB_MemoryToPMA(USB_BTABLE_ENTRIES[0].ADDR_TX, reply_data,
+            reply_length);
         USB_BTABLE_ENTRIES[0].COUNT_TX = reply_length;
         USB_SetEPTXStatus(&(USB->EP0R), USB_EP_TX_VALID);
     }
@@ -340,8 +357,9 @@ void USB_LP_IRQHandler(void)
                     if(USB->EP0R & USB_EP0R_SETUP)
                     {
                         // Clear CTR_RX
-                        USB->EP0R = USB->EP0R & (USB_EP0R_SETUP | USB_EP0R_EP_TYPE |\
-                            USB_EP0R_EP_KIND | USB_EP0R_CTR_TX | USB_EP0R_EA);
+                        USB->EP0R = USB->EP0R & (USB_EP0R_SETUP
+                            | USB_EP0R_EP_TYPE | USB_EP0R_EP_KIND
+                            | USB_EP0R_CTR_TX | USB_EP0R_EA);
 
                         // Setup packed received
                         USB_HandleSetup();
@@ -349,8 +367,9 @@ void USB_LP_IRQHandler(void)
                     else
                     {
                         // Clear CTR_RX
-                        USB->EP0R = USB->EP0R & (USB_EP0R_SETUP | USB_EP0R_EP_TYPE |\
-                            USB_EP0R_EP_KIND | USB_EP0R_CTR_TX | USB_EP0R_EA);
+                        USB->EP0R = USB->EP0R & (USB_EP0R_SETUP
+                            | USB_EP0R_EP_TYPE | USB_EP0R_EP_KIND
+                            | USB_EP0R_CTR_TX | USB_EP0R_EA);
 
                         USB_HandleOut();
                     }
@@ -358,8 +377,8 @@ void USB_LP_IRQHandler(void)
                 else
                 {
                     // Clear CTR_TX
-                    USB->EP0R = USB->EP0R & (USB_EP0R_CTR_RX | USB_EP0R_SETUP |\
-                        USB_EP0R_EP_TYPE | USB_EP0R_EP_KIND | USB_EP0R_EA);
+                    USB->EP0R = USB->EP0R & (USB_EP0R_CTR_RX | USB_EP0R_SETUP
+                        | USB_EP0R_EP_TYPE | USB_EP0R_EP_KIND | USB_EP0R_EA);
 
                     // IN transfer
                     USB_HandleIn();
