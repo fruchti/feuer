@@ -144,7 +144,8 @@ static inline void USB_HandleReset(void)
     USB_BTABLE_ENTRIES[0].COUNT_TX = 0;
     USB_BTABLE_ENTRIES[0].ADDR_TX = 0x80;
 
-    // Set buffer table contents for control endpoint 1
+    // Set buffer table contents for isochronous endpoint 1 and set both buffers
+    // to 64 bytes length
     USB_BTABLE_ENTRIES[1].COUNT_RX_0 = USB_EP_RXCOUNT_BL_SIZE | (1 << 10);
     USB_BTABLE_ENTRIES[1].ADDR_RX_0 = 0x100;
     USB_BTABLE_ENTRIES[1].COUNT_RX_1 = USB_EP_RXCOUNT_BL_SIZE | (1 << 10);
@@ -164,7 +165,7 @@ static inline void USB_HandleReset(void)
     USB->DADDR = USB_DADDR_EF;
 }
 
-static inline void USB_PMAToMemory(uint8_t *mem, uint16_t offset, size_t length)
+void USB_PMAToMemory(uint8_t *mem, uint16_t offset, size_t length)
 {
     uint8_t *pma = (uint8_t*)(USB_PMA_ADDR + 2 * offset);
     for(unsigned int i = 0; i < length / 2; i++)
@@ -175,8 +176,7 @@ static inline void USB_PMAToMemory(uint8_t *mem, uint16_t offset, size_t length)
     }
 }
 
-static inline void USB_MemoryToPMA(uint16_t offset, const uint8_t *mem,
-    size_t length)
+void USB_MemoryToPMA(uint16_t offset, const uint8_t *mem, size_t length)
 {
     uint16_t *pma = (uint16_t*)(USB_PMA_ADDR + 2 * offset);
     for(unsigned int i = 0; i < length / 2; i++)
@@ -387,7 +387,11 @@ void USB_LP_IRQHandler(void)
             else if(ep == 1)
             {
                 USBCOM_HandleISO0OUT();
-                // Ready for next packet
+
+                // Clear CTR_RX
+                USB->EP1R = USB->EP1R & (USB_EP0R_SETUP | USB_EP0R_EP_TYPE
+                    | USB_EP0R_EP_KIND | USB_EP0R_CTR_TX | USB_EP0R_EA);
+                // // Ready for next packet
                 // USB_SetEPRXStatus(&USB->EP1R, USB_EP_RX_VALID);
             }
         }

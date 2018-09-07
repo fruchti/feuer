@@ -128,4 +128,7 @@ typedef struct
 
 void USB_Init(void);
 
+void USB_PMAToMemory(uint8_t *mem, uint16_t offset, size_t length);
+void USB_MemoryToPMA(uint16_t offset, const uint8_t *mem, size_t length);
+
 #endif

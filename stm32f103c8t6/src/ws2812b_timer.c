@@ -1,5 +1,6 @@
 #include "ws2812b_timer.h"
 
+WS2812B_Colour_t WS2812B_BackBuffer[WS2812B_MAX_LED_COUNT];
 WS2812B_Colour_t WS2812B_Buffer[WS2812B_MAX_LED_COUNT];
 int WS2812B_LEDCount = 484;
 uint16_t WS2812B_DMABuffer[48];
@@ -44,6 +45,8 @@ static void WS2812B_UpdateBuffer(void)
 void WS2812B_StartTransfer(void)
 {
     WS2812B_Transferring = true;
+
+    memcpy(WS2812B_Buffer, WS2812B_BackBuffer, sizeof(WS2812B_Buffer));
 
     // Fill buffer
     WS2812B_CurrentLED = 0;
@@ -126,7 +129,7 @@ void WS2812B_Init(void)
 void DMA1_Channel3_IRQHandler(void)
 {
     WS2812B_CurrentLED++;
-    if(WS2812B_CurrentLED == WS2812B_LEDCount + 2)
+    if(WS2812B_CurrentLED == WS2812B_LEDCount + 3)
     {
         DMA1_Channel3->CCR = 0;
         TIM3->CCR2 = 0;
