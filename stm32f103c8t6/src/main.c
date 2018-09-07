@@ -19,10 +19,10 @@ int main(void)
         // int brightness = 64;
         // for(int i = 0; i < WS2812B_LEDCount; i++)
         // {
-        //     WS2812B_Buffer[i].r = ((i + offset) % WS2812B_LEDCount) * brightness
+        //     WS2812B_BackBuffer[i].r = ((i + offset) % WS2812B_LEDCount) * brightness
         //         / (WS2812B_LEDCount - 1);
-        //     WS2812B_Buffer[i].g = 1;
-        //     WS2812B_Buffer[i].b = offset* brightness
+        //     WS2812B_BackBuffer[i].g = 1;
+        //     WS2812B_BackBuffer[i].b = offset * brightness
         //         / (WS2812B_LEDCount - 1);
         // }
         // offset++;

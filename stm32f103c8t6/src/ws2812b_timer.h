@@ -7,7 +7,7 @@
 #include "stm32f103x6.h"
 
 #define WS2812B_MAX_LED_COUNT                   512
-#define WS2812B_INVERT_DO                       1
+#define WS2812B_INVERT_DO                       0
 
 #define WS2812B_ZERO_LENGTH                     29
 #define WS2812B_ONE_LENGTH                      57

@@ -77,33 +77,37 @@ void WS2812B_Init(void)
     }
 
     //// ---- CLOCKS ---- ////
-    // Output is PA7, TIM3_CH2
-    RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;
+    // Output is PB4, TIM3_CH1
+    RCC->APB2ENR |= RCC_APB2ENR_IOPBEN;
     RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
     RCC->AHBENR |= RCC_AHBENR_DMA1EN;
+    RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;
 
     //// ---- GPIO ---- ////
-    // PA7 in alternate function mode, full speed output
-    GPIOA->CRL &= ~(GPIO_CRL_CNF7 | GPIO_CRL_MODE7);
-    GPIOA->CRL |= GPIO_CRL_CNF7_1 | GPIO_CRL_MODE7;
+    // PB4 in alternate function mode, full speed open-drain output
+    GPIOB->CRL &= ~(GPIO_CRL_CNF4 | GPIO_CRL_MODE4);
+    GPIOB->CRL |= GPIO_CRL_CNF4 | GPIO_CRL_MODE4;
+    // Remap TIM3 IOs
+    AFIO->MAPR |= AFIO_MAPR_SWJ_CFG_JTAGDISABLE;
+    AFIO->MAPR |= AFIO_MAPR_TIM3_REMAP_PARTIALREMAP;
 
     //// ---- TIMER ---- ////
     // Set prescaler
     TIM3->PSC = 0;
     TIM3->ARR = WS2812B_ZERO_LENGTH + WS2812B_ONE_LENGTH;
-    TIM3->CCR2 = 0;
+    TIM3->CCR1 = 0;
     // Enable  Output compare
-    TIM3->CCMR1 = TIM_CCMR1_OC2M_2 | TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2PE |\
-        TIM_CCMR1_OC2FE;
+    TIM3->CCMR1 = TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1PE |\
+        TIM_CCMR1_OC1FE;
 #if WS2812B_INVERT_DO
-    TIM3->CCER = TIM_CCER_CC2E | TIM_CCER_CC2P;
+    TIM3->CCER = TIM_CCER_CC1E | TIM_CCER_CC1P;
 #else
-    TIM3->CCER = TIM_CCER_CC2E;
+    TIM3->CCER = TIM_CCER_CC1E;
 #endif
     // Enable update DMA request
     TIM3->DIER = TIM_DIER_UDE;
     // DMA base address
-    TIM3->DCR = ((uint32_t)&(TIM3->CCR2) - (uint32_t)&(TIM3->CR1)) / 4;
+    TIM3->DCR = ((uint32_t)&(TIM3->CCR1) - (uint32_t)&(TIM3->CR1)) / 4;
     // Enabble TIM3
     TIM3->CR1 = TIM_CR1_URS | TIM_CR1_CEN;
 
@@ -132,7 +136,7 @@ void DMA1_Channel3_IRQHandler(void)
     if(WS2812B_CurrentLED == WS2812B_LEDCount + 3)
     {
         DMA1_Channel3->CCR = 0;
-        TIM3->CCR2 = 0;
+        TIM3->CCR1 = 0;
         // Send the last pulse before stopping the timer
         TIM3->CR1 |= TIM_CR1_OPM;
         WS2812B_Transferring = false;
