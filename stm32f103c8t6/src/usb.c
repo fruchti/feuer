@@ -113,6 +113,7 @@ void USB_Init(void)
 
     // Enable reset and correct transfer interrupts
     NVIC_EnableIRQ(USB_LP_IRQn);
+    NVIC_SetPriority(USB_LP_IRQn, 7);
 
     // Analog power up
     USB->CNTR = (uint16_t)USB_CNTR_FRES;

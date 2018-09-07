@@ -121,6 +121,7 @@ void WS2812B_Init(void)
     DMA1_Channel3->CPAR = (uint32_t)&(TIM3->DMAR);
 
     NVIC_EnableIRQ(DMA1_Channel3_IRQn);
+    NVIC_SetPriority(DMA1_Channel3_IRQn, 0);
 
     for(unsigned int i = 0; i < 1000; i++)
     {
