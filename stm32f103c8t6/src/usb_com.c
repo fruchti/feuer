@@ -32,34 +32,33 @@ void USBCOM_HandleISO0OUT(void)
 {
     int buffindex = USB->EP1R & USB_EP1R_DTOG_RX;
     int rcvlen = 0;
-    uint8_t rcvbuf[64];
+    uint16_t pmaoffset;
+
     if(buffindex)
     {
         rcvlen = USB_BTABLE_ENTRIES[1].COUNT_RX_0 & 0x3ff;
-        USB_PMAToMemory(rcvbuf,
-            USB_BTABLE_ENTRIES[1].ADDR_RX_0,
-            rcvlen);
+        pmaoffset = USB_BTABLE_ENTRIES[1].ADDR_RX_0;
     }
     else
     {
         rcvlen = USB_BTABLE_ENTRIES[1].COUNT_RX_1 & 0x3ff;
-        USB_PMAToMemory(rcvbuf,
-            USB_BTABLE_ENTRIES[1].ADDR_RX_1,
-            rcvlen);
+        pmaoffset = USB_BTABLE_ENTRIES[1].ADDR_RX_1;
     }
 
-    if(rcvlen < 4)
+    if(rcvlen <= 4)
     {
         return;
     }
 
     // First 4 bytes are the start LED
-    int startled = *(uint32_t*)rcvbuf;
+    int startled = 0;
+    USB_PMAToMemory((uint8_t*)&startled, pmaoffset, 4);
 
     if(startled >= WS2812B_LEDCount)
     {
         return;
     }
 
-    memcpy(WS2812B_BackBuffer + startled, rcvbuf + 4, rcvlen - 4);
+    // Rest of the packet is LED data
+    USB_PMAToMemory((uint8_t*)(WS2812B_BackBuffer + startled), pmaoffset + 4, rcvlen - 4);
 }
