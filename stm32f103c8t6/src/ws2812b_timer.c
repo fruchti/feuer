@@ -2,7 +2,7 @@
 
 WS2812B_Colour_t WS2812B_BackBuffer[WS2812B_MAX_LED_COUNT];
 WS2812B_Colour_t WS2812B_Buffer[WS2812B_MAX_LED_COUNT];
-int WS2812B_LEDCount = 484;
+int WS2812B_LEDCount = 10 * 60;
 uint16_t WS2812B_DMABuffer[48];
 volatile int WS2812B_CurrentLED;
 volatile bool WS2812B_Transferring;
