@@ -13,8 +13,8 @@ static inline void USB_SetEPR(volatile uint16_t *EPR, uint16_t status)
     // register contents might change during the funciton's execution. Thus,
     // only use this function in initialisation code!
     volatile uint16_t v = *EPR;
-    status ^= v & (USB_EP0R_DTOG_RX | USB_EP0R_STAT_RX |\
-        USB_EP0R_DTOG_TX | USB_EP0R_STAT_TX);
+    status ^= v & (USB_EP0R_DTOG_RX | USB_EP0R_STAT_RX
+        | USB_EP0R_DTOG_TX | USB_EP0R_STAT_TX);
     *EPR = status;
 }
 
@@ -88,7 +88,25 @@ static inline void USB_Delay(unsigned int delay)
     SysTick->VAL = 0;
     SysTick->CTRL = SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_ENABLE_Msk;
     while(!((SysTick->CTRL) & SysTick_CTRL_COUNTFLAG_Msk));
-	SysTick->CTRL = 0;
+    SysTick->CTRL = 0;
+}
+
+static inline void USB_EnablePullup(void)
+{
+    GPIOA->BSRR = 1 << PIN_USB_PULLUP;
+    GPIOA->CRH = (GPIOA->CRH
+        & ~(0x0f << (PIN_USB_PULLUP * 4 - 32)))
+        | (0x01 << (PIN_USB_PULLUP * 4 - 32))       // Push-pull output, 10 MHz
+        ;
+}
+
+static inline void USB_DisablePullup(void)
+{
+    GPIOA->BRR = 1 << PIN_USB_PULLUP;
+    GPIOA->CRH = (GPIOA->CRH
+        & ~(0x0f << (PIN_USB_PULLUP * 4 - 32)))
+        | (0x04 << (PIN_USB_PULLUP * 4 - 32))       // Floating input
+        ;
 }
 
 void USB_Init(void)
@@ -105,8 +123,8 @@ void USB_Init(void)
     //     USB_BTABLE_ENTRIES[i].COUNT_TX = 0;
     // }
 
-    GPIOA->CRH &= ~(GPIO_CRH_CNF11 | GPIO_CRH_MODE11 |\
-        GPIO_CRH_CNF12 | GPIO_CRH_MODE12);
+    GPIOA->CRH &= ~(GPIO_CRH_CNF11 | GPIO_CRH_MODE11
+        | GPIO_CRH_CNF12 | GPIO_CRH_MODE12);
     GPIOA->CRH |= GPIO_CRH_MODE11 | GPIO_CRH_MODE12;
     GPIOA->ODR &= ~(GPIO_CRH_MODE11 | GPIO_CRH_MODE12);
     USB_Delay(100000);
@@ -125,8 +143,18 @@ void USB_Init(void)
     USB->CNTR = (uint16_t)(USB_CNTR_RESETM | USB_CNTR_CTRM);
 
     // Configure USB pins (PA11 and PA12 in AF mode, 50 MHz push-pull)
-    GPIOA->CRH |= GPIO_CRH_CNF11_1 | GPIO_CRH_MODE11 |\
-        GPIO_CRH_CNF12_1 | GPIO_CRH_MODE12;
+    GPIOA->CRH |= GPIO_CRH_CNF11_1 | GPIO_CRH_MODE11
+        | GPIO_CRH_CNF12_1 | GPIO_CRH_MODE12;
+
+    // Free PA15 for use as GPIO
+    AFIO->MAPR = (AFIO->MAPR
+        & ~(AFIO_MAPR_SWJ_CFG))
+        | AFIO_MAPR_SWJ_CFG_JTAGDISABLE;
+    USB_EnablePullup();
+
+    // Configure USB pins (PA11 and PA12 in AF mode, 50 MHz push-pull)
+    GPIOA->CRH |= GPIO_CRH_CNF11_1 | GPIO_CRH_MODE11
+        | GPIO_CRH_CNF12_1 | GPIO_CRH_MODE12;
 }
 
 static inline void USB_HandleReset(void)
@@ -153,14 +181,14 @@ static inline void USB_HandleReset(void)
     USB_BTABLE_ENTRIES[1].ADDR_RX_1 = 0x140;
 
     // Configure endpoint 0
-    USB_SetEPR(&(USB->EP0R), USB_EPR_EP_TYPE_CONTROL |\
-        USB_EPR_STAT_TX_NAK | USB_EPR_STAT_RX_VALID);
+    USB_SetEPR(&(USB->EP0R), USB_EPR_EP_TYPE_CONTROL
+        | USB_EPR_STAT_TX_NAK | USB_EPR_STAT_RX_VALID);
 
 
     // Configure endpoint 1
-    USB_SetEPR(&(USB->EP1R), USB_EPR_EP_TYPE_ISO |\
-        USB_EPR_STAT_TX_DISABLED | USB_EPR_STAT_RX_VALID |\
-        (1 << USB_EP0R_EA_Pos));
+    USB_SetEPR(&(USB->EP1R), USB_EPR_EP_TYPE_ISO
+        | USB_EPR_STAT_TX_DISABLED | USB_EPR_STAT_RX_VALID
+        | (1 << USB_EP0R_EA_Pos));
 
     // Enable
     USB->DADDR = USB_DADDR_EF;
@@ -214,7 +242,7 @@ static inline void USB_HandleSetup(void)
     int reply_length = 0;
     uint8_t reply_response = USB_TOKEN_ACK;
 
-    if((sp.bmRequestType & (USB_REQUEST_TYPE | USB_REQUEST_RECIPIENT)) \
+    if((sp.bmRequestType & (USB_REQUEST_TYPE | USB_REQUEST_RECIPIENT))
         == (USB_REQUEST_TYPE_STANDARD | USB_REQUEST_RECIPIENT_DEVICE))
     {
         switch(sp.bRequest)
@@ -241,7 +269,7 @@ static inline void USB_HandleSetup(void)
                         reply_data = USB_ConfigurationInterfaceDescriptor.raw;
                         if(sp.wLength < USB_ConfigurationInterfaceDescriptor
                             .configuration.wTotalLength)
-                        {   
+                        {
                             reply_length = USB_ConfigurationInterfaceDescriptor
                                 .configuration.bLength;
                         }
@@ -297,7 +325,7 @@ static inline void USB_HandleSetup(void)
                         break;
                 }
                 break;
-            
+
             case USB_REQUEST_SET_ADDRESS:
                 USB_Address = sp.wValue & USB_DADDR_ADD;
                 reply_response = USB_EP_TX_VALID;

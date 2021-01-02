@@ -1,9 +1,11 @@
 #include "usb_com.h"
 #include "ws2812b_timer.h"
+#include "led.h"
 
 unsigned USBCOM_Registers[USBCOM_N_REGISTERS];
 
-uint8_t USBCOM_HandleSetupPacket(USB_SetupPacket_t *sp, const uint8_t **reply_data)
+uint8_t USBCOM_HandleSetupPacket(USB_SetupPacket_t *sp,
+    const uint8_t **reply_data)
 {
     uint8_t reply_length = 0;
 
@@ -21,7 +23,8 @@ uint8_t USBCOM_HandleSetupPacket(USB_SetupPacket_t *sp, const uint8_t **reply_da
         // Write register
         if(sp->bRequest < USBCOM_N_REGISTERS)
         {
-            USBCOM_Registers[sp->bRequest] = ((uint32_t)(sp->wIndex) << 16) | sp->wValue;
+            USBCOM_Registers[sp->bRequest] = ((uint32_t)(sp->wIndex) << 16)
+                | sp->wValue;
         }
     }
 
@@ -30,6 +33,8 @@ uint8_t USBCOM_HandleSetupPacket(USB_SetupPacket_t *sp, const uint8_t **reply_da
 
 void USBCOM_HandleISO0OUT(void)
 {
+    LED_OFF();
+
     int buffindex = USB->EP1R & USB_EP1R_DTOG_RX;
     int rcvlen = 0;
     uint16_t pmaoffset;
@@ -60,5 +65,6 @@ void USBCOM_HandleISO0OUT(void)
     }
 
     // Rest of the packet is LED data
-    USB_PMAToMemory((uint8_t*)(WS2812B_BackBuffer + startled), pmaoffset + 4, rcvlen - 4);
+    USB_PMAToMemory((uint8_t*)(WS2812B_BackBuffer + startled), pmaoffset + 4,
+        rcvlen - 4);
 }

@@ -56,12 +56,12 @@ void WS2812B_StartTransfer(void)
 
     // Start DMA
     DMA1_Channel3->CMAR = (uint32_t)&(*WS2812B_DMABuffer);
-    DMA1_Channel3->CCR = DMA_CCR_PL |           // Top priority
-        DMA_CCR_PSIZE_0 | DMA_CCR_MSIZE_0 |     // 16-bit transfers
-        DMA_CCR_MINC | DMA_CCR_CIRC |           // Memory increment, circular
-        DMA_CCR_DIR |                           // Memory to peripheral
-        DMA_CCR_HTIE | DMA_CCR_TCIE |           // Interrupts
-        DMA_CCR_EN;                             // Enable DMA
+    DMA1_Channel3->CCR = DMA_CCR_PL             // Top priority
+        | DMA_CCR_PSIZE_0 | DMA_CCR_MSIZE_0       // 16-bit transfers
+        | DMA_CCR_MINC | DMA_CCR_CIRC             // Memory increment, circular
+        | DMA_CCR_DIR                             // Memory to peripheral
+        | DMA_CCR_HTIE | DMA_CCR_TCIE             // Interrupts
+        | DMA_CCR_EN;                             // Enable DMA
 
     // Start timer
     TIM3->CR1 = TIM_CR1_URS | TIM_CR1_CEN;
@@ -97,8 +97,8 @@ void WS2812B_Init(void)
     TIM3->ARR = WS2812B_ZERO_LENGTH + WS2812B_ONE_LENGTH;
     TIM3->CCR1 = 0;
     // Enable  Output compare
-    TIM3->CCMR1 = TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1PE |\
-        TIM_CCMR1_OC1FE;
+    TIM3->CCMR1 = TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1PE
+        | TIM_CCMR1_OC1FE;
 #if WS2812B_INVERT_DO
     TIM3->CCER = TIM_CCER_CC1E | TIM_CCER_CC1P;
 #else
