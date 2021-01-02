@@ -134,7 +134,7 @@ void WS2812B_Init(void)
 void DMA1_Channel3_IRQHandler(void)
 {
     WS2812B_CurrentLED++;
-    if(WS2812B_CurrentLED == WS2812B_LEDCount + 3)
+    if(WS2812B_CurrentLED == WS2812B_LEDCount + 11)
     {
         DMA1_Channel3->CCR = 0;
         TIM3->CCR1 = 0;
