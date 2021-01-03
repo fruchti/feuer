@@ -2,7 +2,7 @@
 #define USB_H
 
 #include <string.h>
-#include "stm32f103x6.h"
+#include "stm32f1xx.h"
 
 #include "pinning.h"
 #include "led.h"

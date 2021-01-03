@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "stm32f103x6.h"
+#include "stm32f1xx.h"
 
 #define WS2812B_MAX_LED_COUNT                   512
 #define WS2812B_INVERT_DO                       0

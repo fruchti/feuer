@@ -2,7 +2,7 @@
 #define MAIN_H_
 
 #include <stdbool.h>
-#include "stm32f103x6.h"
+#include "stm32f1xx.h"
 #include "pinning.h"
 #include "buildid.h"
 #include "led.h"
